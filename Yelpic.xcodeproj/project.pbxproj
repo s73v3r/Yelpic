@@ -14,6 +14,7 @@
 		0AB81AD01F928D6300BB69CC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0AB81ACE1F928D6300BB69CC /* LaunchScreen.storyboard */; };
 		0AB81ADB1F928D6300BB69CC /* YelpicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB81ADA1F928D6300BB69CC /* YelpicTests.swift */; };
 		0AB81AE61F928D6300BB69CC /* YelpicUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB81AE51F928D6300BB69CC /* YelpicUITests.swift */; };
+		0AB81AF41F92B7E800BB69CC /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0AB81AF31F92B7E800BB69CC /* Config.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		0AB81AE11F928D6300BB69CC /* YelpicUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YelpicUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AB81AE51F928D6300BB69CC /* YelpicUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YelpicUITests.swift; sourceTree = "<group>"; };
 		0AB81AE71F928D6300BB69CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0AB81AF31F92B7E800BB69CC /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 				0AB81ACC1F928D6300BB69CC /* Assets.xcassets */,
 				0AB81ACE1F928D6300BB69CC /* LaunchScreen.storyboard */,
 				0AB81AD11F928D6300BB69CC /* Info.plist */,
+				0AB81AF31F92B7E800BB69CC /* Config.plist */,
 			);
 			path = Yelpic;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AB81AF41F92B7E800BB69CC /* Config.plist in Resources */,
 				0AB81AD01F928D6300BB69CC /* LaunchScreen.storyboard in Resources */,
 				0AB81ACD1F928D6300BB69CC /* Assets.xcassets in Resources */,
 				0AB81ACB1F928D6300BB69CC /* Main.storyboard in Resources */,
