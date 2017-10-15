@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="aAy-ca-Wlt">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -9,22 +9,39 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Navigation Controller-->
+        <scene sceneID="Ehb-zd-wYH">
+            <objects>
+                <navigationController id="aAy-ca-Wlt" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="tpV-kR-Sk6">
+                        <rect key="frame" x="0.0" y="44" width="375" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.82745098039999998" green="0.13725490200000001" blue="0.13725490200000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
+                        <textAttributes key="largeTitleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="VsL-z5-sQU"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="W54-Ho-vLX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-786" y="117"/>
+        </scene>
+        <!--Yelpic-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Yelpic" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Yelpic" id="BYZ-38-t0r" customClass="ViewController" customModule="Yelpic" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Search" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2gE-h0-XEZ">
-                                <rect key="frame" x="16" y="44" width="343" height="30"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pG5-kE-2Rl">
-                                <rect key="frame" x="16" y="82" width="343" height="676"/>
+                                <rect key="frame" x="16" y="156" width="343" height="602"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="rFC-of-A7P">
                                     <size key="itemSize" width="50" height="50"/>
@@ -52,24 +69,21 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="2gE-h0-XEZ" secondAttribute="trailing" constant="16" id="0jo-7E-aFE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="pG5-kE-2Rl" secondAttribute="trailing" constant="16" id="2x9-qc-kQP"/>
+                            <constraint firstItem="pG5-kE-2Rl" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="5CE-el-ksN"/>
                             <constraint firstItem="pG5-kE-2Rl" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="C3C-Cd-wOy"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="pG5-kE-2Rl" secondAttribute="bottom" constant="20" id="KDR-DW-OJA"/>
-                            <constraint firstItem="2gE-h0-XEZ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Wfn-33-V3S"/>
-                            <constraint firstItem="2gE-h0-XEZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="kgw-L9-HRN"/>
-                            <constraint firstItem="pG5-kE-2Rl" firstAttribute="top" secondItem="2gE-h0-XEZ" secondAttribute="bottom" constant="8" id="rc7-PV-ixZ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Yelpic" largeTitleDisplayMode="always" id="ra5-qf-WCJ"/>
                     <connections>
                         <outlet property="pictureCollection" destination="pG5-kE-2Rl" id="tU0-I9-eNg"/>
-                        <outlet property="searchBar" destination="2gE-h0-XEZ" id="5g5-Zu-gto"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="117.59999999999999" y="116.74876847290641"/>
+            <point key="canvasLocation" x="45.600000000000001" y="116.74876847290641"/>
         </scene>
     </scenes>
 </document>

@@ -10,8 +10,9 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var searchBar: UITextField!
     @IBOutlet weak var pictureCollection: UICollectionView!
+    
+    var searchController = UISearchController(searchResultsController: nil)
     
     fileprivate func fetchYelpToken(_ apiKeys: [String : AnyObject]) {
         let headers = ["grant_type", "client_id", "client_secret"]
@@ -49,7 +50,7 @@ class ViewController: UIViewController {
                     return
                 }
                 
-                print(responseJSON["access_token"] as! String)
+                print(responseJSON["access_token"] as? String)
             } catch {
                 print("Error trying to convert data to JSON")
             }
@@ -61,8 +62,23 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        navigationController?.navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
         guard let apiKeys = readFile("Config") else { return }
-        fetchYelpToken(apiKeys)
+//        fetchYelpToken(apiKeys)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationItem.hidesSearchBarWhenScrolling = false
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationItem.hidesSearchBarWhenScrolling = true
+        searchController.isActive = true
     }
     
     func readFile(_ fileName: String) -> [String: AnyObject]? {
