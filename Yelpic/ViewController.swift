@@ -62,6 +62,7 @@ class ViewController: UIViewController {
         // According to Yelp, they won't expire until 2038
         if let key = UserDefaults.standard.string(forKey: "YELP_TOKEN") {
             print("Key exists: \(key)")
+            getPicturesOfPizza()
             return
         }
         
@@ -99,6 +100,7 @@ class ViewController: UIViewController {
                 if let token = responseJSON["access_token"] as? String {
                     print("Saving token")
                     UserDefaults.standard.set(token, forKey: "YELP_TOKEN")
+                    self.getPicturesOfPizza()
                 }
                 
             } catch {
@@ -121,10 +123,42 @@ class ViewController: UIViewController {
         sessionConfig.httpAdditionalHeaders = ["Authorization": bearer]
         
         let url = URL(string: "https://api.yelp.com/v3/businesses/search")!
-        var request = URLRequest(url: url)
+        var urlComponents = URLComponents(string: "https://api.yelp.com/v3/businesses/search")!
+        let searchTerm = URLQueryItem(name: "term", value: "pizza")
+        let lat = URLQueryItem(name: "latitude", value: "37.786882")
+        let long = URLQueryItem(name: "longitude", value: "-122.399972")
+        urlComponents.queryItems = [searchTerm, lat, long]
+        
+        var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = "GET"
         
-        
+        let session = URLSession(configuration: sessionConfig)
+        let task = session.dataTask(with: request) { (data, response, error) in
+            guard error == nil else {
+                print("Error: Unable to retrieve token")
+                print(error!)
+                return
+            }
+            
+            // make sure we got data
+            guard let responseData = data else {
+                print("Error: did not receive data")
+                return
+            }
+            
+            do {
+                guard let responseJSON = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String : AnyObject] else {
+                    print("Error: Unable to decode JSON")
+                    return
+                }
+                
+                print(responseJSON)
+                
+            } catch {
+                print("Error trying to convert data to JSON")
+            }
+        }
+        task.resume()
     }
 
 }
