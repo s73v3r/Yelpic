@@ -14,51 +14,6 @@ class ViewController: UIViewController {
     
     var searchController = UISearchController(searchResultsController: nil)
     
-    fileprivate func fetchYelpToken(_ apiKeys: [String : AnyObject]) {
-        let headers = ["grant_type", "client_id", "client_secret"]
-        
-        let url = URL(string: "https://api.yelp.com/oauth2/token")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content_Type")
-        
-        
-        let body = (apiKeys.map({ (key, value) -> String in
-            return "\(key)=\(value)"
-        }) as Array).joined(separator: "&")
-        request.httpBody = body.data(using: String.Encoding.utf8)
-        
-        let config = URLSessionConfiguration.default
-        let session = URLSession(configuration: config)
-        
-        let task = session.dataTask(with: request) { (data, resposne, error) in
-            guard error == nil else {
-                print("Error: Unable to retrieve token")
-                print(error!)
-                return
-            }
-            
-            // make sure we got data
-            guard let responseData = data else {
-                print("Error: did not receive data")
-                return
-            }
-            
-            do {
-                guard let responseJSON = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String : AnyObject] else {
-                    print("Error: Unable to decode JSON")
-                    return
-                }
-                
-                print(responseJSON["access_token"] as? String)
-            } catch {
-                print("Error trying to convert data to JSON")
-            }
-            return
-        }
-        task.resume()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -67,7 +22,7 @@ class ViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         
         guard let apiKeys = readFile("Config") else { return }
-//        fetchYelpToken(apiKeys)
+        fetchYelpToken(apiKeys)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -101,7 +56,76 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    fileprivate func fetchYelpToken(_ apiKeys: [String : AnyObject]) {
+        // Check if we already have an access token
+        // According to Yelp, they won't expire until 2038
+        if let key = UserDefaults.standard.string(forKey: "YELP_TOKEN") {
+            print("Key exists: \(key)")
+            return
+        }
+        
+        let url = URL(string: "https://api.yelp.com/oauth2/token")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content_Type")
+        
+        let body = (apiKeys.map({ (key, value) -> String in
+            return "\(key)=\(value)"
+        }) as Array).joined(separator: "&")
+        request.httpBody = body.data(using: String.Encoding.utf8)
+        
+        let session = URLSession.shared
+        
+        let task = session.dataTask(with: request) { (data, resposne, error) in
+            guard error == nil else {
+                print("Error: Unable to retrieve token")
+                print(error!)
+                return
+            }
+            
+            // make sure we got data
+            guard let responseData = data else {
+                print("Error: did not receive data")
+                return
+            }
+            
+            do {
+                guard let responseJSON = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String : AnyObject] else {
+                    print("Error: Unable to decode JSON")
+                    return
+                }
+                
+                if let token = responseJSON["access_token"] as? String {
+                    print("Saving token")
+                    UserDefaults.standard.set(token, forKey: "YELP_TOKEN")
+                }
+                
+            } catch {
+                print("Error trying to convert data to JSON")
+            }
+            return
+        }
+        task.resume()
+    }
 
+    func getPicturesOfPizza() {
+        guard let token = UserDefaults.standard.string(forKey: "YELP_TOKEN") else {
+            print("Error: Cannot search without token")
+            return
+        }
+        
+        let bearer = "Bearer \(token)"
+        
+        var sessionConfig = URLSessionConfiguration.default
+        sessionConfig.httpAdditionalHeaders = ["Authorization": bearer]
+        
+        let url = URL(string: "https://api.yelp.com/v3/businesses/search")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        
+    }
 
 }
 
