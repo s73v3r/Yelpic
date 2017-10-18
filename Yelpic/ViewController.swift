@@ -8,17 +8,10 @@
 
 import UIKit
 
-class ViewController: UIViewController, UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
-            getPicturesOfFood(searchTerm: searchText)
-        }
-    }
-    
-
+class ViewController: UIViewController, UISearchResultsUpdating, UICollectionViewDataSource {
     @IBOutlet weak var pictureCollection: UICollectionView!
-    
     var searchController = UISearchController(searchResultsController: nil)
+    var urls = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +24,8 @@ class ViewController: UIViewController, UISearchResultsUpdating {
         
         guard let apiKeys = readFile("Config") else { return }
         fetchYelpToken(apiKeys)
+        
+        pictureCollection.dataSource = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -155,7 +150,7 @@ class ViewController: UIViewController, UISearchResultsUpdating {
                 }
                 
                 if let businesses = responseJSON["businesses"] as? [[String: AnyObject]] {
-                    let urls = businesses.flatMap({ dict in
+                    self.urls = businesses.flatMap({ dict in
                         if let url = dict["image_url"] as? String, !url.isEmpty {
                             return url
                         }
@@ -171,6 +166,36 @@ class ViewController: UIViewController, UISearchResultsUpdating {
             }
         }
         task.resume()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return urls.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! ImageCell
+        cell.image.backgroundColor = UIColor.green
+        
+        let url:URL! = URL(string: urls[indexPath.row])
+        URLSession.shared.downloadTask(with: url) { (location, response, error) in
+            if let imgData = try? Data(contentsOf: url) {
+                DispatchQueue.main.async {
+                    if let imgCell:ImageCell = collectionView.cellForItem(at: indexPath) as? ImageCell {
+                        let image = UIImage(data: imgData)
+                        imgCell.image.image = image;
+                    }
+                }
+
+            }
+        }.resume()
+        
+        return cell
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+            getPicturesOfFood(searchTerm: searchText)
+        }
     }
 
 }
