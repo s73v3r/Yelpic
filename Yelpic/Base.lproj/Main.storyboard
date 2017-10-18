@@ -40,8 +40,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pG5-kE-2Rl">
-                                <rect key="frame" x="16" y="156" width="343" height="602"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pG5-kE-2Rl">
+                                <rect key="frame" x="16" y="297" width="343" height="461"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="rFC-of-A7P">
                                     <size key="itemSize" width="50" height="50"/>
@@ -50,7 +50,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="vaf-iL-5oR">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="vaf-iL-5oR" customClass="ImageCell">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -63,6 +63,9 @@
                                                 </imageView>
                                             </subviews>
                                         </view>
+                                        <connections>
+                                            <outlet property="image" destination="g25-5y-tjO" id="8MC-XH-JfY"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
