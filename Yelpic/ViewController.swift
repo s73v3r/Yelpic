@@ -8,7 +8,13 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+            getPicturesOfFood(searchTerm: searchText)
+        }
+    }
+    
 
     @IBOutlet weak var pictureCollection: UICollectionView!
     
@@ -17,8 +23,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.placeholder = "Search"
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
-        navigationController?.navigationItem.searchController = searchController
+        navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         
         guard let apiKeys = readFile("Config") else { return }
@@ -33,28 +41,25 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationItem.hidesSearchBarWhenScrolling = true
-        searchController.isActive = true
     }
     
     func readFile(_ fileName: String) -> [String: AnyObject]? {
         guard let fileURL = Bundle.main.url(forResource: fileName, withExtension: "plist") else {
+            print("Error: Unable to find File")
             return nil
         }
         
         guard let data = try? Data(contentsOf: fileURL) else {
+            print("Error: Unable to Read file")
             return nil
         }
         
         guard let result = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String : AnyObject] else {
+            print("Error: File wrong")
             return nil
         }
         
         return result
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     fileprivate func fetchYelpToken(_ apiKeys: [String : AnyObject]) {
@@ -62,7 +67,6 @@ class ViewController: UIViewController {
         // According to Yelp, they won't expire until 2038
         if let key = UserDefaults.standard.string(forKey: "YELP_TOKEN") {
             print("Key exists: \(key)")
-            getPicturesOfPizza()
             return
         }
         
@@ -100,7 +104,6 @@ class ViewController: UIViewController {
                 if let token = responseJSON["access_token"] as? String {
                     print("Saving token")
                     UserDefaults.standard.set(token, forKey: "YELP_TOKEN")
-                    self.getPicturesOfPizza()
                 }
                 
             } catch {
@@ -111,7 +114,7 @@ class ViewController: UIViewController {
         task.resume()
     }
 
-    func getPicturesOfPizza() {
+    func getPicturesOfFood(searchTerm: String) {
         guard let token = UserDefaults.standard.string(forKey: "YELP_TOKEN") else {
             print("Error: Cannot search without token")
             return
@@ -119,12 +122,11 @@ class ViewController: UIViewController {
         
         let bearer = "Bearer \(token)"
         
-        var sessionConfig = URLSessionConfiguration.default
+        let sessionConfig = URLSessionConfiguration.default
         sessionConfig.httpAdditionalHeaders = ["Authorization": bearer]
         
-        let url = URL(string: "https://api.yelp.com/v3/businesses/search")!
         var urlComponents = URLComponents(string: "https://api.yelp.com/v3/businesses/search")!
-        let searchTerm = URLQueryItem(name: "term", value: "pizza")
+        let searchTerm = URLQueryItem(name: "term", value: searchTerm)
         let lat = URLQueryItem(name: "latitude", value: "37.786882")
         let long = URLQueryItem(name: "longitude", value: "-122.399972")
         urlComponents.queryItems = [searchTerm, lat, long]
@@ -152,7 +154,17 @@ class ViewController: UIViewController {
                     return
                 }
                 
-                print(responseJSON)
+                if let businesses = responseJSON["businesses"] as? [[String: AnyObject]] {
+                    let urls = businesses.flatMap({ dict in
+                        if let url = dict["image_url"] as? String, !url.isEmpty {
+                            return url
+                        }
+                        return nil
+                    })
+                    DispatchQueue.main.async { [unowned self] in
+                        self.pictureCollection.reloadData()
+                    }
+                }
                 
             } catch {
                 print("Error trying to convert data to JSON")
