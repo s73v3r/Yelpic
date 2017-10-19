@@ -8,19 +8,16 @@
 
 import UIKit
 
-class ViewController: UIViewController, UISearchResultsUpdating, UICollectionViewDataSource {
+class ViewController: UIViewController, UICollectionViewDataSource {
     @IBOutlet weak var pictureCollection: UICollectionView!
-    var searchController = UISearchController(searchResultsController: nil)
+    @IBOutlet weak var searchText: UITextField!
     var urls = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        searchController.searchResultsUpdater = self
-        searchController.searchBar.placeholder = "Search"
+
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
         
         guard let apiKeys = readFile("Config") else { return }
         fetchYelpToken(apiKeys)
@@ -36,6 +33,12 @@ class ViewController: UIViewController, UISearchResultsUpdating, UICollectionVie
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationItem.hidesSearchBarWhenScrolling = true
+    }
+
+    @IBAction func onSearchClicked(_ sender: Any) {
+        if let searchTerm = searchText.text, !searchTerm.isEmpty {
+            getPicturesOfFood(searchTerm: searchTerm)
+        }
     }
     
     func readFile(_ fileName: String) -> [String: AnyObject]? {
@@ -191,12 +194,5 @@ class ViewController: UIViewController, UISearchResultsUpdating, UICollectionVie
         
         return cell
     }
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
-            getPicturesOfFood(searchTerm: searchText)
-        }
-    }
-
 }
 
