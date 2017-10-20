@@ -8,10 +8,11 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDataSource {
+class ViewController: UIViewController {
     @IBOutlet weak var pictureCollection: UICollectionView!
     @IBOutlet weak var searchText: UITextField!
-    var urls = [String]()
+    
+    var dataSource : ImageCellDataSource!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +23,8 @@ class ViewController: UIViewController, UICollectionViewDataSource {
         guard let apiKeys = readFile("Config") else { return }
         fetchYelpToken(apiKeys)
         
-        pictureCollection.dataSource = self
+        dataSource = ImageCellDataSource(collectionView: pictureCollection, withReuseIdentifier: "ImageCell")
+        pictureCollection.dataSource = dataSource
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -153,14 +155,14 @@ class ViewController: UIViewController, UICollectionViewDataSource {
                 }
                 
                 if let businesses = responseJSON["businesses"] as? [[String: AnyObject]] {
-                    self.urls = businesses.flatMap({ dict in
+                    let urls = businesses.flatMap({ dict in
                         if let url = dict["image_url"] as? String, !url.isEmpty {
                             return url
                         }
                         return nil
                     })
                     DispatchQueue.main.async { [unowned self] in
-                        self.pictureCollection.reloadData()
+                        self.dataSource?.addURLs(urls: urls)
                     }
                 }
                 
@@ -169,30 +171,6 @@ class ViewController: UIViewController, UICollectionViewDataSource {
             }
         }
         task.resume()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return urls.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! ImageCell
-        cell.image.backgroundColor = UIColor.green
-        
-        let url:URL! = URL(string: urls[indexPath.row])
-        URLSession.shared.downloadTask(with: url) { (location, response, error) in
-            if let imgData = try? Data(contentsOf: url) {
-                DispatchQueue.main.async {
-                    if let imgCell:ImageCell = collectionView.cellForItem(at: indexPath) as? ImageCell {
-                        let image = UIImage(data: imgData)
-                        imgCell.image.image = image;
-                    }
-                }
-
-            }
-        }.resume()
-        
-        return cell
     }
 }
 
