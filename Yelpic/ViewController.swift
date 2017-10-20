@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, NetworkInjection {
     @IBOutlet weak var pictureCollection: UICollectionView!
     @IBOutlet weak var searchText: UITextField!
     
@@ -20,7 +20,7 @@ class ViewController: UIViewController {
 
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
         
-        guard let apiKeys = readFile("Config") else { return }
+        guard let apiKeys = keyProvider.provideKeys() else { return }
         fetchYelpToken(apiKeys)
         
         dataSource = ImageCellDataSource(collectionView: pictureCollection, withReuseIdentifier: "ImageCell")
@@ -43,26 +43,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func readFile(_ fileName: String) -> [String: AnyObject]? {
-        guard let fileURL = Bundle.main.url(forResource: fileName, withExtension: "plist") else {
-            print("Error: Unable to find File")
-            return nil
-        }
-        
-        guard let data = try? Data(contentsOf: fileURL) else {
-            print("Error: Unable to Read file")
-            return nil
-        }
-        
-        guard let result = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String : AnyObject] else {
-            print("Error: File wrong")
-            return nil
-        }
-        
-        return result
-    }
-    
-    fileprivate func fetchYelpToken(_ apiKeys: [String : AnyObject]) {
+    fileprivate func fetchYelpToken(_ apiKeys: [String : String]) {
         // Check if we already have an access token
         // According to Yelp, they won't expire until 2038
         if let key = UserDefaults.standard.string(forKey: "YELP_TOKEN") {

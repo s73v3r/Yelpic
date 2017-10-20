@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0A7EC2C31F9707CC00831734 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EC2C21F9707CC00831734 /* ImageCell.swift */; };
 		0A7EC2C51F9973E000831734 /* ImageCellDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EC2C41F9973E000831734 /* ImageCellDataSource.swift */; };
+		0A7EC2C91F99804700831734 /* KeyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EC2C81F99804700831734 /* KeyProvider.swift */; };
+		0A7EC2CC1F99834D00831734 /* NetworkInjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EC2CB1F99834D00831734 /* NetworkInjection.swift */; };
 		0AB81AC61F928D6300BB69CC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB81AC51F928D6300BB69CC /* AppDelegate.swift */; };
 		0AB81AC81F928D6300BB69CC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB81AC71F928D6300BB69CC /* ViewController.swift */; };
 		0AB81ACB1F928D6300BB69CC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0AB81AC91F928D6300BB69CC /* Main.storyboard */; };
@@ -39,6 +41,8 @@
 /* Begin PBXFileReference section */
 		0A7EC2C21F9707CC00831734 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		0A7EC2C41F9973E000831734 /* ImageCellDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCellDataSource.swift; sourceTree = "<group>"; };
+		0A7EC2C81F99804700831734 /* KeyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyProvider.swift; sourceTree = "<group>"; };
+		0A7EC2CB1F99834D00831734 /* NetworkInjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInjection.swift; sourceTree = "<group>"; };
 		0AB81AC21F928D6300BB69CC /* Yelpic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yelpic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AB81AC51F928D6300BB69CC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0AB81AC71F928D6300BB69CC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -112,6 +116,8 @@
 				0AB81AF31F92B7E800BB69CC /* Config.plist */,
 				0A7EC2C21F9707CC00831734 /* ImageCell.swift */,
 				0A7EC2C41F9973E000831734 /* ImageCellDataSource.swift */,
+				0A7EC2C81F99804700831734 /* KeyProvider.swift */,
+				0A7EC2CB1F99834D00831734 /* NetworkInjection.swift */,
 			);
 			path = Yelpic;
 			sourceTree = "<group>";
@@ -272,6 +278,8 @@
 				0AB81AC81F928D6300BB69CC /* ViewController.swift in Sources */,
 				0AB81AC61F928D6300BB69CC /* AppDelegate.swift in Sources */,
 				0A7EC2C51F9973E000831734 /* ImageCellDataSource.swift in Sources */,
+				0A7EC2CC1F99834D00831734 /* NetworkInjection.swift in Sources */,
+				0A7EC2C91F99804700831734 /* KeyProvider.swift in Sources */,
 				0A7EC2C31F9707CC00831734 /* ImageCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
