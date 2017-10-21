@@ -8,11 +8,18 @@
 
 import UIKit
 
+enum AuthenticationError : Error {
+    case TokenNotFound
+}
+
 class ViewController: UIViewController, NetworkInjection {
     @IBOutlet weak var pictureCollection: UICollectionView!
     @IBOutlet weak var searchText: UITextField!
     
     var dataSource : ImageCellDataSource!
+    
+    var amountFetched = 0
+    var session: URLSession?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +28,9 @@ class ViewController: UIViewController, NetworkInjection {
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
         
         guard let apiKeys = keyProvider.provideKeys() else { return }
-        fetchYelpToken(apiKeys)
+        fetchYelpToken(apiKeys) { (token) in
+            self.session = initSession(bearerToken: token)
+        }
         
         dataSource = ImageCellDataSource(collectionView: pictureCollection, withReuseIdentifier: "ImageCell")
         pictureCollection.dataSource = dataSource
@@ -43,7 +52,7 @@ class ViewController: UIViewController, NetworkInjection {
         }
     }
     
-    fileprivate func fetchYelpToken(_ apiKeys: [String : String]) {
+    private func fetchYelpToken(_ apiKeys: [String : String], tokenCallback: (String) -> ()) {
         // Check if we already have an access token
         // According to Yelp, they won't expire until 2038
         if let key = UserDefaults.standard.string(forKey: "YELP_TOKEN") {
@@ -95,27 +104,42 @@ class ViewController: UIViewController, NetworkInjection {
         task.resume()
     }
 
-    func getPicturesOfFood(searchTerm: String) {
+    func loadBearerToken() throws -> String {
         guard let token = UserDefaults.standard.string(forKey: "YELP_TOKEN") else {
             print("Error: Cannot search without token")
-            return
+            throw AuthenticationError.TokenNotFound
         }
-        
-        let bearer = "Bearer \(token)"
-        
+
+        return token
+    }
+    
+    func initSession(bearerToken: String) -> URLSession {
         let sessionConfig = URLSessionConfiguration.default
-        sessionConfig.httpAdditionalHeaders = ["Authorization": bearer]
-        
+        sessionConfig.httpAdditionalHeaders = ["Authorization": "Bearer \(bearerToken)"]
+        return URLSession(configuration: sessionConfig)
+    }
+    
+    private func createRequest(searchTerm: String, withOffset offset: Int) -> URLRequest {
         var urlComponents = URLComponents(string: "https://api.yelp.com/v3/businesses/search")!
-        let searchTerm = URLQueryItem(name: "term", value: searchTerm)
-        let lat = URLQueryItem(name: "latitude", value: "37.786882")
-        let long = URLQueryItem(name: "longitude", value: "-122.399972")
-        urlComponents.queryItems = [searchTerm, lat, long]
+        let searchTermParam = URLQueryItem(name: "term", value: searchTerm)
+        let latParam = URLQueryItem(name: "latitude", value: "37.786882")
+        let longParam = URLQueryItem(name: "longitude", value: "-122.399972")
+        let offsetParam = URLQueryItem(name: "offset", value: "\(offset)")
+        urlComponents.queryItems = [searchTermParam, latParam, longParam, offsetParam]
         
         var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = "GET"
-        
-        let session = URLSession(configuration: sessionConfig)
+        return request
+    }
+
+    func getPicturesOfFood(searchTerm: String) {
+        guard let session = self.session else {
+            print("Error: Session not initialized")
+            return
+        }
+
+        let request = createRequest(searchTerm: searchTerm, withOffset: amountFetched)
+
         let task = session.dataTask(with: request) { (data, response, error) in
             guard error == nil else {
                 print("Error: Unable to retrieve token")
@@ -142,6 +166,7 @@ class ViewController: UIViewController, NetworkInjection {
                         }
                         return nil
                     })
+                    self.amountFetched += urls.count
                     DispatchQueue.main.async { [unowned self] in
                         self.dataSource?.addURLs(urls: urls)
                     }
@@ -153,5 +178,7 @@ class ViewController: UIViewController, NetworkInjection {
         }
         task.resume()
     }
+
+
 }
 
