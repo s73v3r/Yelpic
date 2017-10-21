@@ -8,11 +8,7 @@
 
 import UIKit
 
-enum AuthenticationError : Error {
-    case TokenNotFound
-}
-
-class ViewController: UIViewController, NetworkInjection {
+class ViewController: UIViewController {
     @IBOutlet weak var pictureCollection: UICollectionView!
     @IBOutlet weak var searchText: UITextField!
     

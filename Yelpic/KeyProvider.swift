@@ -8,6 +8,10 @@
 
 import Foundation
 
+enum AuthenticationError : Error {
+    case TokenNotFound
+}
+
 protocol KeyProvider {
     func provideKeys() -> [String: String]?
 }
