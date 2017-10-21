@@ -20,6 +20,7 @@ class ViewController: UIViewController, NetworkInjection {
     
     var amountFetched = 0
     var session: URLSession?
+    var searchProvider: YelpSearchProvider?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,9 +29,7 @@ class ViewController: UIViewController, NetworkInjection {
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
         
         guard let apiKeys = keyProvider.provideKeys() else { return }
-        fetchYelpToken(apiKeys) { (token) in
-            self.session = initSession(bearerToken: token)
-        }
+        fetchYelpToken(apiKeys)
         
         dataSource = ImageCellDataSource(collectionView: pictureCollection, withReuseIdentifier: "ImageCell")
         pictureCollection.dataSource = dataSource
@@ -47,12 +46,16 @@ class ViewController: UIViewController, NetworkInjection {
     }
 
     @IBAction func onSearchClicked(_ sender: Any) {
-        if let searchTerm = searchText.text, !searchTerm.isEmpty {
-            getPicturesOfFood(searchTerm: searchTerm)
+        if let searchTerm = searchText.text, !searchTerm.isEmpty,
+            let bearerToken = try? loadBearerToken() {
+            searchProvider = YelpSearchProvider(searchTerm: searchTerm, bearerToken: bearerToken)
+            searchProvider?.performSearch(withResults: { (urls) in
+                self.dataSource?.addURLs(urls: urls)
+            })
         }
     }
     
-    private func fetchYelpToken(_ apiKeys: [String : String], tokenCallback: (String) -> ()) {
+    private func fetchYelpToken(_ apiKeys: [String : String]) {
         // Check if we already have an access token
         // According to Yelp, they won't expire until 2038
         if let key = UserDefaults.standard.string(forKey: "YELP_TOKEN") {
@@ -112,73 +115,4 @@ class ViewController: UIViewController, NetworkInjection {
 
         return token
     }
-    
-    func initSession(bearerToken: String) -> URLSession {
-        let sessionConfig = URLSessionConfiguration.default
-        sessionConfig.httpAdditionalHeaders = ["Authorization": "Bearer \(bearerToken)"]
-        return URLSession(configuration: sessionConfig)
-    }
-    
-    private func createRequest(searchTerm: String, withOffset offset: Int) -> URLRequest {
-        var urlComponents = URLComponents(string: "https://api.yelp.com/v3/businesses/search")!
-        let searchTermParam = URLQueryItem(name: "term", value: searchTerm)
-        let latParam = URLQueryItem(name: "latitude", value: "37.786882")
-        let longParam = URLQueryItem(name: "longitude", value: "-122.399972")
-        let offsetParam = URLQueryItem(name: "offset", value: "\(offset)")
-        urlComponents.queryItems = [searchTermParam, latParam, longParam, offsetParam]
-        
-        var request = URLRequest(url: urlComponents.url!)
-        request.httpMethod = "GET"
-        return request
-    }
-
-    func getPicturesOfFood(searchTerm: String) {
-        guard let session = self.session else {
-            print("Error: Session not initialized")
-            return
-        }
-
-        let request = createRequest(searchTerm: searchTerm, withOffset: amountFetched)
-
-        let task = session.dataTask(with: request) { (data, response, error) in
-            guard error == nil else {
-                print("Error: Unable to retrieve token")
-                print(error!)
-                return
-            }
-            
-            // make sure we got data
-            guard let responseData = data else {
-                print("Error: did not receive data")
-                return
-            }
-            
-            do {
-                guard let responseJSON = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String : AnyObject] else {
-                    print("Error: Unable to decode JSON")
-                    return
-                }
-                
-                if let businesses = responseJSON["businesses"] as? [[String: AnyObject]] {
-                    let urls = businesses.flatMap({ dict in
-                        if let url = dict["image_url"] as? String, !url.isEmpty {
-                            return url
-                        }
-                        return nil
-                    })
-                    self.amountFetched += urls.count
-                    DispatchQueue.main.async { [unowned self] in
-                        self.dataSource?.addURLs(urls: urls)
-                    }
-                }
-                
-            } catch {
-                print("Error trying to convert data to JSON")
-            }
-        }
-        task.resume()
-    }
-
-
 }
-
