@@ -10,4 +10,8 @@ import UIKit
 
 class ImageCell: UICollectionViewCell {
     @IBOutlet weak var image: UIImageView!
+    
+    override func prepareForReuse() {
+        image.image = nil
+    }
 }
