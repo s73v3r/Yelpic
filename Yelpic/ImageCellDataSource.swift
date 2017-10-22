@@ -8,12 +8,12 @@
 
 import UIKit
 
-class ImageCellDataSource :NSObject, UICollectionViewDataSource {
+class ImageCellDataSource :NSObject, UICollectionViewDataSource, ImageProviderInjection {
     var urls = [String]()
     let collectionView : UICollectionView
     let cellReuseIdentifier: String
     let cache: NSCache<AnyObject, AnyObject>
-    
+
     init(collectionView: UICollectionView, withReuseIdentifier reuseID: String) {
         self.collectionView = collectionView
         self.cellReuseIdentifier = reuseID
@@ -32,25 +32,21 @@ class ImageCellDataSource :NSObject, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! ImageCell
-        cell.image.backgroundColor = UIColor.green
         
         let url:URL! = URL(string: urls[indexPath.row])
-        if let cacheImage = cache.object(forKey: urls[indexPath.row] as AnyObject) as? UIImage {
-            cell.image.image = cacheImage
-        } else {
-            URLSession.shared.downloadTask(with: url) { (location, response, error) in
-                if let imgData = try? Data(contentsOf: url) {
-                    DispatchQueue.main.async {
-                        if let imgCell:ImageCell = collectionView.cellForItem(at: indexPath) as? ImageCell {
-                            let image = UIImage(data: imgData)
-                            imgCell.image.image = image;
-                            self.cache.setObject(image!, forKey:url.absoluteString as AnyObject)
-                        }
-                    }
-                }
-            }.resume()
+        imageProvider.retrieveImageAtURL(url: url) { result in
+            switch result {
+            case .Success(let image):
+                cell.image.image = image
+
+            case .Downloaded:
+                self.collectionView.reloadItems(at: [indexPath])
+
+            default:
+                    print("Error retrieving image for \(indexPath)")
+            }
         }
-        
+
         return cell
     }
 }

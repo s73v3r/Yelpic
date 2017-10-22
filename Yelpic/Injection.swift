@@ -13,13 +13,13 @@ enum NetworkError: Error {
     case TransmissionError(Error)
     case NoDataReturned
     case JSONParseError
+    case CorruptedImage
 }
 
 enum NetworkResult<T> {
     case Success(T)
     case Error(NetworkError)
 }
-
 
 protocol KeyProviderInjection{}
 
@@ -39,4 +39,14 @@ struct BearerTokenInjector: BearerTokenInjection {
 
 extension BearerTokenInjection {
     var bearerTokenProvider: BearerTokenProvider { get { return BearerTokenInjector.bearerTokenProvider } }
+}
+
+protocol ImageProviderInjection {}
+
+struct ImageProviderInjector {
+    static var imageProvider = YelpImageProvider()
+}
+
+extension ImageProviderInjection {
+    var imageProvider: ImageProvider { get { return ImageProviderInjector.imageProvider } }
 }

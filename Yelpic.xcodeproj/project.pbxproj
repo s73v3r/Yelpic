@@ -13,6 +13,7 @@
 		0A7EC2C51F9973E000831734 /* ImageCellDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EC2C41F9973E000831734 /* ImageCellDataSource.swift */; };
 		0A7EC2C91F99804700831734 /* KeyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EC2C81F99804700831734 /* KeyProvider.swift */; };
 		0A7EC2CC1F99834D00831734 /* Injection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EC2CB1F99834D00831734 /* Injection.swift */; };
+		0AAB825B1F9C14F1007EDCEF /* ImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB825A1F9C14F1007EDCEF /* ImageProvider.swift */; };
 		0AB81AC61F928D6300BB69CC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB81AC51F928D6300BB69CC /* AppDelegate.swift */; };
 		0AB81AC81F928D6300BB69CC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB81AC71F928D6300BB69CC /* ViewController.swift */; };
 		0AB81ACB1F928D6300BB69CC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0AB81AC91F928D6300BB69CC /* Main.storyboard */; };
@@ -47,6 +48,7 @@
 		0A7EC2C41F9973E000831734 /* ImageCellDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCellDataSource.swift; sourceTree = "<group>"; };
 		0A7EC2C81F99804700831734 /* KeyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyProvider.swift; sourceTree = "<group>"; };
 		0A7EC2CB1F99834D00831734 /* Injection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injection.swift; sourceTree = "<group>"; };
+		0AAB825A1F9C14F1007EDCEF /* ImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProvider.swift; sourceTree = "<group>"; };
 		0AB81AC21F928D6300BB69CC /* Yelpic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yelpic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AB81AC51F928D6300BB69CC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0AB81AC71F928D6300BB69CC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				0A7EC2CB1F99834D00831734 /* Injection.swift */,
 				0A6AC0771F9BD1EE006BD294 /* SearchProvider.swift */,
 				0A6AC0791F9BE4FB006BD294 /* BearerTokenProvider.swift */,
+				0AAB825A1F9C14F1007EDCEF /* ImageProvider.swift */,
 			);
 			path = Yelpic;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 				0A7EC2C91F99804700831734 /* KeyProvider.swift in Sources */,
 				0A7EC2C31F9707CC00831734 /* ImageCell.swift in Sources */,
 				0A6AC0781F9BD1EE006BD294 /* SearchProvider.swift in Sources */,
+				0AAB825B1F9C14F1007EDCEF /* ImageProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
