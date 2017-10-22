@@ -14,6 +14,7 @@ enum NetworkError: Error {
     case NoDataReturned
     case JSONParseError
     case CorruptedImage
+    case NoMoreResults
 }
 
 enum NetworkResult<T> {

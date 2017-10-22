@@ -25,6 +25,11 @@ class ImageCellDataSource :NSObject, UICollectionViewDataSource, ImageProviderIn
         self.urls.append(contentsOf: urls)
         self.collectionView.reloadData()
     }
+
+    func clearURLs() {
+        self.urls.removeAll()
+        self.collectionView.reloadData()
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return urls.count

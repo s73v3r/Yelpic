@@ -10,15 +10,24 @@ import Foundation
 
 class YelpSearchProvider: BearerTokenInjection {
 
+    static let RETURN_LIMIT = 20
     let searchTerm: String
     var session: URLSession?
     var amountFetched = 0
+    var totalResults: Int?
 
     init(searchTerm: String) {
         self.searchTerm = searchTerm
     }
 
     func performSearch(withResults resultsCallback: @escaping (NetworkResult<[String]>) -> ()) {
+        if let totalResults = self.totalResults,
+            amountFetched >= totalResults {
+            // We already have all the itmes. Return.
+            resultsCallback(.Error(.NoMoreResults))
+            return
+        }
+        
         let request = createRequest(searchTerm: searchTerm, withOffset: amountFetched)
         
         if let session = self.session {
@@ -43,7 +52,8 @@ class YelpSearchProvider: BearerTokenInjection {
         let latParam = URLQueryItem(name: "latitude", value: "37.786882")
         let longParam = URLQueryItem(name: "longitude", value: "-122.399972")
         let offsetParam = URLQueryItem(name: "offset", value: "\(offset)")
-        urlComponents.queryItems = [searchTermParam, latParam, longParam, offsetParam]
+        let limitParam = URLQueryItem(name: "limit", value: "\(YelpSearchProvider.RETURN_LIMIT)")
+        urlComponents.queryItems = [searchTermParam, latParam, longParam, offsetParam, limitParam]
 
         var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = "GET"
@@ -70,6 +80,10 @@ class YelpSearchProvider: BearerTokenInjection {
                     print("Error: Unable to decode JSON")
                     resultsCallback(.Error(.JSONParseError))
                     return
+                }
+                
+                if let totalResults = responseJSON["total"] as? Int {
+                    self.totalResults = totalResults
                 }
                 
                 if let businesses = responseJSON["businesses"] as? [[String: AnyObject]] {
