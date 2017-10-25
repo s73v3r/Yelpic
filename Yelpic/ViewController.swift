@@ -38,7 +38,7 @@ class ViewController: UIViewController, UICollectionViewDelegate {
             case .Success(let location):
                 self.location = location
                 
-            case .Error(_):
+            case .Error( _):
                 let alert = UIAlertController(title: "Location Error",
                                               message: "Problem acquiring location. For demo purposes, location will default to Apple's HQ",
                                               preferredStyle: .alert)
