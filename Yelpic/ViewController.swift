@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class ViewController: UIViewController, UICollectionViewDelegate {
     @IBOutlet weak var pictureCollection: UICollectionView!
@@ -18,6 +19,9 @@ class ViewController: UIViewController, UICollectionViewDelegate {
     var session: URLSession?
     var searchProvider: YelpSearchProvider?
     var waiting = false
+    var location: CLLocation?
+    
+    let locationProvider = LocationProvider()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +32,29 @@ class ViewController: UIViewController, UICollectionViewDelegate {
         dataSource = ImageCellDataSource(collectionView: pictureCollection, withReuseIdentifier: "ImageCell")
         pictureCollection.dataSource = dataSource
         pictureCollection.delegate = self
+        
+        locationProvider.getLocationUpdate { (result) in
+            switch result {
+            case .Success(let location):
+                self.location = location
+                
+            case .Error(_):
+                let alert = UIAlertController(title: "Location Error",
+                                              message: "Problem acquiring location. For demo purposes, location will default to Apple's HQ",
+                                              preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+                
+            case .NoAuthorization:
+                let alert = UIAlertController(title: "Location Permission Needed",
+                                              message: "Please enable location so we can show you businesses near you\n For demo purposes, location will default to Apple's HQ",
+                                              preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -41,10 +68,15 @@ class ViewController: UIViewController, UICollectionViewDelegate {
     }
 
     @IBAction func onSearchClicked(_ sender: Any) {
+        self.searchText.resignFirstResponder()
         if let searchTerm = searchText.text, !searchTerm.isEmpty {
             self.dataSource?.clearURLs()
             self.waiting = false
-            searchProvider = YelpSearchProvider(searchTerm: searchTerm)
+            if let location = self.location {
+                searchProvider = YelpSearchProvider(searchTerm: searchTerm, withLatitude: location.coordinate.latitude, andWithLongitude: location.coordinate.longitude)
+            } else {
+                searchProvider = YelpSearchProvider(searchTerm: searchTerm)
+            }
             searchProvider?.performSearch(withResults: { (result) in
                 switch result {
                 case .Success(let urls):

@@ -12,12 +12,18 @@ class YelpSearchProvider: BearerTokenInjection {
 
     static let RETURN_LIMIT = 20
     let searchTerm: String
+    let latitude: Double
+    let longitude: Double
     var session: URLSession?
     var amountFetched = 0
     var totalResults: Int?
+    
 
-    init(searchTerm: String) {
+    // Default area is going to be Apple's HQ
+    init(searchTerm: String, withLatitude latitude: Double = 37.786882, andWithLongitude longitude: Double = -122.399972) {
         self.searchTerm = searchTerm
+        self.latitude = latitude
+        self.longitude = longitude
     }
 
     func performSearch(withResults resultsCallback: @escaping (NetworkResult<[String]>) -> ()) {
@@ -49,8 +55,8 @@ class YelpSearchProvider: BearerTokenInjection {
     private func createRequest(searchTerm: String, withOffset offset: Int) -> URLRequest {
         var urlComponents = URLComponents(string: "https://api.yelp.com/v3/businesses/search")!
         let searchTermParam = URLQueryItem(name: "term", value: searchTerm)
-        let latParam = URLQueryItem(name: "latitude", value: "37.786882")
-        let longParam = URLQueryItem(name: "longitude", value: "-122.399972")
+        let latParam = URLQueryItem(name: "latitude", value: "\(self.latitude)")
+        let longParam = URLQueryItem(name: "longitude", value: "\(self.longitude)")
         let offsetParam = URLQueryItem(name: "offset", value: "\(offset)")
         let limitParam = URLQueryItem(name: "limit", value: "\(YelpSearchProvider.RETURN_LIMIT)")
         urlComponents.queryItems = [searchTermParam, latParam, longParam, offsetParam, limitParam]

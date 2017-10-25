@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A0F33181F9FD1B000CA73DE /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0F33171F9FD1B000CA73DE /* LocationProvider.swift */; };
 		0A6AC0781F9BD1EE006BD294 /* SearchProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6AC0771F9BD1EE006BD294 /* SearchProvider.swift */; };
 		0A6AC07A1F9BE4FB006BD294 /* BearerTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6AC0791F9BE4FB006BD294 /* BearerTokenProvider.swift */; };
 		0A7EC2C31F9707CC00831734 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EC2C21F9707CC00831734 /* ImageCell.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A0F33171F9FD1B000CA73DE /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
 		0A6AC0771F9BD1EE006BD294 /* SearchProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchProvider.swift; sourceTree = "<group>"; };
 		0A6AC0791F9BE4FB006BD294 /* BearerTokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BearerTokenProvider.swift; sourceTree = "<group>"; };
 		0A7EC2C21F9707CC00831734 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				0A6AC0771F9BD1EE006BD294 /* SearchProvider.swift */,
 				0A6AC0791F9BE4FB006BD294 /* BearerTokenProvider.swift */,
 				0AAB825A1F9C14F1007EDCEF /* ImageProvider.swift */,
+				0A0F33171F9FD1B000CA73DE /* LocationProvider.swift */,
 			);
 			path = Yelpic;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 				0A7EC2C31F9707CC00831734 /* ImageCell.swift in Sources */,
 				0A6AC0781F9BD1EE006BD294 /* SearchProvider.swift in Sources */,
 				0AAB825B1F9C14F1007EDCEF /* ImageProvider.swift in Sources */,
+				0A0F33181F9FD1B000CA73DE /* LocationProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
